@@ -24,7 +24,7 @@
     <img id="maxwell" src="gatonegro.png" style="display: none;" />
     <img id="sabritas" src="cheetos.png" style="display: none;" />
     <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; gap: 50px;">
-        <canvas id="myCanvas" width="1000" height="1000"></canvas>
+        <canvas id="myCanvas" width="700" height="700"></canvas>
 
         <div style="width: 25%; font-size: 1.7em; font-family: sans-serif; background-color: #c073cf; padding: 20px; border-radius: 20px;">
             <h4>INSTRUCCIONES</h4>
@@ -62,7 +62,7 @@
 
         audioGanar.preload = "auto";
         audioGanar.volume = 0.10;
-        
+        ctx.scale(0.7,0.7);
             function calcularTiempo(){
                 if(!inicioTiempo){
                     inicioTiempo= performance.now();
