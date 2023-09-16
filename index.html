@@ -56,13 +56,12 @@
         let audio = new Audio("happycat.mp3");
         let audioGanar = new Audio("winner.mp3");
         audio.preload = "auto";
-        audio.autoplay= true;
         audio.loop = true;
         audio.volume = 0.10;
 
         audioGanar.preload = "auto";
         audioGanar.volume = 0.10;
-        //ctx.scale(0.6,0.6);
+     
             function calcularTiempo(){
                 if(!inicioTiempo){
                     inicioTiempo= performance.now();
@@ -252,17 +251,6 @@
         let Pause = false;
         let Victoria = false;
 
-        // document.addEventListener("keydown", (e) => {
-        //     console.log(e.keyCode);
-
-        //     if (e.keyCode == 80) {
-        //         pause = !Pause
-        //     } else {
-        //         dir = e.keyCode
-
-        //     }
-        // })
-
         document.addEventListener("keydown", (e) => {
             console.log(e.keyCode);
 
@@ -291,6 +279,7 @@
         })
 
         function update() {
+            audio.play();
             calcularTiempo();
             ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -399,8 +388,8 @@
                     window.setTimeout(callback, 17);
                 };
         }());
-
-        window.requestAnimationFrame(update);
+       
+         window.requestAnimationFrame(update);
     </script>
 
 </body>
