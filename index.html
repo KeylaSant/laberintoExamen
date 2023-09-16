@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BananaCat</title>
+    <link rel="icon" href="caticon.png">
+
+    <style>
+        canvas {
+            background-color: #c3b5f3;
+        }
+
+        body {
+            background-color: black;
+        }
+    </style>
+
+</head>
+
+<body>
+    <img id="bananacat" src="bananacat.png" style="display: none;" />
+    <img id="maxwell" src="gatonegro.png" style="display: none;" />
+    <img id="sabritas" src="cheetos.png" style="display: none;" />
+    <canvas id="myCanvas" width="1000" height="1000"></canvas>
+
+    <script>
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+        const banana = document.getElementById("bananacat");
+        const gatonegro = document.getElementById("maxwell");
+        const sabritasimg = document.getElementById("sabritas");
+        let muros = [];
+        let cheetos = [];
+        let dir = 0;
+        let speed = 3;
+        let seconds;
+        let inicioTiempo;
+        let cheetosRecolectar=0;
+        let audio = new Audio("happycat.mp3");
+        //let sonido = new Sonido("winner.mp3");
+        audio.preload = "auto";
+        audio.autoplay= true;
+        audio.loop = true;
+        audio.volume = 0.10;
+        // audio.onload=()=> {
+        //     audio.play();
+        // }
+            function calcularTiempo(){
+                if(!inicioTiempo){
+                    inicioTiempo= performance.now();
+                    return;
+                }
+                seconds = ((performance.now() - inicioTiempo)/1000).toFixed(2);
+                return seconds;
+            
+            }
+
+
+        class Rectangulo {
+            constructor(x, y, w, h, c, img) {
+                this.x = x;
+                this.y = y,
+                this.w = w;
+                this.h = h;
+                this.c = c;
+
+                this.img = img;
+            }
+
+            paint(ctx) {
+
+                if (this.img) {
+                    ctx.drawImage(this.img, this.x, this.y, this.w, this.h)
+
+                } else {
+                    ctx.fillStyle = this.c;
+                    ctx.fillRect(this.x, this.y, this.w, this.h);
+                    ctx.strokeRect(this.x, this.y, this.w, this.h);
+                }
+            }
+            seTocan(meta) {
+
+                if (this.x < meta.x + meta.w &&
+                    this.x + this.w > meta.x &&
+                    this.y < meta.y + meta.h &&
+                    this.y + this.h > meta.y) {
+                    return true;
+                }
+                return false;
+            }
+
+        }
+        const player = new Rectangulo(50, 100, 24, 52, "black", banana);
+        const meta = new Rectangulo(900, 900, 70, 70, "black", gatonegro);
+
+        
+    
+        muros[0] = new Rectangulo(125, 100, 825, 10, "#85c4e7");//arriba
+        muros[1] = new Rectangulo(940, 110, 10, 775, "#85c4e7");//derecha
+        muros[2] = new Rectangulo(50, 175, 10, 775, "#85c4e7");//izquierda
+        muros[3] = new Rectangulo(50, 950, 825, 10, "#85c4e7");//abajo
+
+        muros[4] = new Rectangulo(230, 110, 5, 60, "#85c4e7");
+        muros[5] = new Rectangulo(140, 165, 90, 5, "#85c4e7");
+        muros[6] = new Rectangulo(130, 230, 5, 50, "#85c4e7");
+        muros[7] = new Rectangulo(130, 280, 150, 5, "#85c4e7");
+        muros[8] = new Rectangulo(280, 185, 5, 100, "#85c4e7");
+        muros[9] = new Rectangulo(280, 180, 150, 5, "#85c4e7");
+        muros[10] = new Rectangulo(380, 185, 5, 200, "#85c4e7");
+        muros[11] = new Rectangulo(180, 170, 5, 50, "#85c4e7");
+        muros[12] = new Rectangulo(230, 230, 50, 5, "#85c4e7");
+        muros[13] = new Rectangulo(470, 185, 5, 60, "#85c4e7");
+        muros[14] = new Rectangulo(420, 250, 5, 40, "#85c4e7");
+        muros[15] = new Rectangulo(420, 350, 5, 80, "#85c4e7");
+        muros[16] = new Rectangulo(380, 385, 40, 5, "#85c4e7");
+        muros[17] = new Rectangulo(420, 350, 80, 5, "#85c4e7");
+        muros[18] = new Rectangulo(495, 310, 5, 40, "#85c4e7");
+        muros[19] = new Rectangulo(460, 305, 40, 5, "#85c4e7");
+        muros[20] = new Rectangulo(550, 245, 5, 230, "#85c4e7");
+        muros[21] = new Rectangulo(485, 415, 200, 5, "#85c4e7");
+        muros[22] = new Rectangulo(470, 180, 90, 5, "#85c4e7");
+        muros[23] = new Rectangulo(380, 490, 110, 5, "#85c4e7");
+        muros[24] = new Rectangulo(485, 420, 5, 70, "#85c4e7");
+        muros[25] = new Rectangulo(380, 450, 5, 40, "#85c4e7");
+        muros[26] = new Rectangulo(250, 450, 130, 5, "#85c4e7");
+        muros[27] = new Rectangulo(420, 245, 130, 5, "#85c4e7");
+        muros[28] = new Rectangulo(325, 240, 5, 150, "#85c4e7");
+        muros[29] = new Rectangulo(255, 350, 70, 5, "#85c4e7");
+        muros[30] = new Rectangulo(250, 350, 5, 100, "#85c4e7");
+        muros[31] = new Rectangulo(200, 285, 5, 310, "#85c4e7");
+        muros[32] = new Rectangulo(200, 510, 130, 5, "#85c4e7");
+        muros[33] = new Rectangulo(330, 510, 5, 40, "#85c4e7");
+        muros[34] = new Rectangulo(330, 550, 50, 5, "#85c4e7");
+        muros[35] = new Rectangulo(380, 550, 5, 80, "#85c4e7");
+        muros[36] = new Rectangulo(440, 490, 5, 70, "#85c4e7");
+        muros[37] = new Rectangulo(380, 630, 320, 5, "#85c4e7");
+        muros[38] = new Rectangulo(550, 570, 250, 5, "#85c4e7");
+        muros[39] = new Rectangulo(700, 575, 5, 60, "#85c4e7");
+        muros[40] = new Rectangulo(550, 530, 5, 40, "#85c4e7");
+        muros[41] = new Rectangulo(680, 530, 5, 40, "#85c4e7");
+        muros[42] = new Rectangulo(610, 380, 5, 130, "#85c4e7");
+        muros[43] = new Rectangulo(680, 350, 5, 110, "#85c4e7");
+        muros[44] = new Rectangulo(680, 350, 70, 5, "#85c4e7");
+        muros[45] = new Rectangulo(750, 255, 5, 100, "#85c4e7");
+        muros[46] = new Rectangulo(750, 250, 60, 5, "#85c4e7");
+        muros[47] = new Rectangulo(810, 185, 5, 70, "#85c4e7");
+        muros[48] = new Rectangulo(810, 180, 80, 5, "#85c4e7");
+        muros[49] = new Rectangulo(730, 410, 5, 80, "#85c4e7");
+        muros[50] = new Rectangulo(730, 410, 70, 5, "#85c4e7");
+        muros[51] = new Rectangulo(800, 335, 5, 80, "#85c4e7");
+        muros[52] = new Rectangulo(800, 330, 50, 5, "#85c4e7");
+        muros[53] = new Rectangulo(850, 245, 5, 150, "#85c4e7");
+        muros[54] = new Rectangulo(890, 180, 5, 150, "#85c4e7");
+        muros[55] = new Rectangulo(890, 330, 50, 5, "#85c4e7");
+        muros[56] = new Rectangulo(850, 390, 30, 5, "#85c4e7");
+        muros[57] = new Rectangulo(880, 390, 5, 100, "#85c4e7");
+        muros[58] = new Rectangulo(805, 490, 80, 5, "#85c4e7");
+        muros[59] = new Rectangulo(800, 490, 5, 85, "#85c4e7");
+        muros[60] = new Rectangulo(870, 550, 70, 5, "#85c4e7");
+        muros[61] = new Rectangulo(870, 550, 5, 90, "#85c4e7");
+        muros[62] = new Rectangulo(795, 640, 80, 5, "#85c4e7");
+        muros[63] = new Rectangulo(795, 640, 5, 60, "#85c4e7");
+        muros[64] = new Rectangulo(550, 695, 250, 5, "#85c4e7");
+        muros[65] = new Rectangulo(470, 630, 5, 150, "#85c4e7");
+        muros[66] = new Rectangulo(470, 780, 360, 5, "#85c4e7");
+        muros[67] = new Rectangulo(830, 720, 5, 100, "#85c4e7");
+        muros[68] = new Rectangulo(890, 720, 5, 100, "#85c4e7");
+        muros[69] = new Rectangulo(895, 770, 50, 5, "#85c4e7");
+        muros[70] = new Rectangulo(850, 880, 5, 70, "#85c4e7");
+        muros[71] = new Rectangulo(750, 760, 5, 20, "#85c4e7");
+        muros[72] = new Rectangulo(550, 760, 5, 20, "#85c4e7");
+        muros[73] = new Rectangulo(650, 700, 5, 20, "#85c4e7");
+        muros[74] = new Rectangulo(780, 880, 70, 5, "#85c4e7");
+        muros[75] = new Rectangulo(720, 780, 5, 70, "#85c4e7");
+        muros[76] = new Rectangulo(655, 850, 70, 5, "#85c4e7");
+        muros[77] = new Rectangulo(500, 880, 5, 70, "#85c4e7");
+        muros[78] = new Rectangulo(500, 880, 70, 5, "#85c4e7");
+        muros[79] = new Rectangulo(550, 850, 5, 30, "#85c4e7");
+        muros[80] = new Rectangulo(60, 340, 100, 5, "#85c4e7");
+        muros[81] = new Rectangulo(100, 410, 100, 5, "#85c4e7");
+        muros[82] = new Rectangulo(60, 500, 70, 5, "#85c4e7");
+        muros[83] = new Rectangulo(130, 470, 5, 185, "#85c4e7");
+        muros[84] = new Rectangulo(130, 650, 120, 5, "#85c4e7");
+        muros[85] = new Rectangulo(250, 570, 5, 180, "#85c4e7");
+        muros[86] = new Rectangulo(330, 550, 5, 190, "#85c4e7");
+        muros[87] = new Rectangulo(330, 740, 50, 5, "#85c4e7");
+        muros[88] = new Rectangulo(380, 695, 5, 50, "#85c4e7");
+        muros[89] = new Rectangulo(440, 700, 60, 5, "#85c4e7");
+        muros[90] = new Rectangulo(255, 700, 30, 5, "#85c4e7");
+        muros[91] = new Rectangulo(170, 745, 80, 5, "#85c4e7");
+        muros[92] = new Rectangulo(170, 745, 5, 50, "#85c4e7");
+        muros[93] = new Rectangulo(60, 710, 80, 5, "#85c4e7");
+        muros[94] = new Rectangulo(110, 790, 60, 5, "#85c4e7");
+        muros[95] = new Rectangulo(60, 890, 80, 5, "#85c4e7");
+        muros[96] = new Rectangulo(140, 855, 5, 40, "#85c4e7");
+        muros[97] = new Rectangulo(220, 750, 5, 80, "#85c4e7");
+        muros[98] = new Rectangulo(220, 830, 50, 5, "#85c4e7");
+        muros[99] = new Rectangulo(220, 890, 100, 5, "#85c4e7");
+        muros[100] = new Rectangulo(270, 830, 5, 60, "#85c4e7");
+        muros[101] = new Rectangulo(330, 810, 50, 5, "#85c4e7");
+        muros[102] = new Rectangulo(380, 810, 5, 80, "#85c4e7");
+        muros[103] = new Rectangulo(380, 890, 60, 5, "#85c4e7");
+        muros[104] = new Rectangulo(740, 670, 5, 30, "#85c4e7");
+        muros[105] = new Rectangulo(770, 530, 30, 5, "#85c4e7");
+        muros[106] = new Rectangulo(900, 660, 40, 5, "#85c4e7");
+        muros[107] = new Rectangulo(500, 590, 5, 40, "#85c4e7");
+        muros[108] = new Rectangulo(400, 110, 5, 10, "#85c4e7");
+        muros[109] = new Rectangulo(660, 110, 5, 100, "#85c4e7");
+        muros[110] = new Rectangulo(600, 210, 120, 5, "#85c4e7");
+        muros[111] = new Rectangulo(720, 175, 5, 40, "#85c4e7");
+        muros[112] = new Rectangulo(720, 170, 50, 5, "#85c4e7");
+        muros[113] = new Rectangulo(850, 110, 5, 10, "#85c4e7");
+        muros[114] = new Rectangulo(610, 275, 5, 40, "#85c4e7");
+        muros[115] = new Rectangulo(610, 270, 70, 5, "#85c4e7");
+        muros[116] = new Rectangulo(60, 210, 40, 5, "#85c4e7");
+        muros[117] = new Rectangulo(400, 890, 5, 70, "#85c4e7");
+        muros[118] = new Rectangulo(690, 850, 5, 40, "#85c4e7");
+        muros[119] = new Rectangulo(610, 780, 5, 110, "#85c4e7");
+
+        //compuerta
+        muros[120]= new Rectangulo(850,880,90,5,"yellow");
+
+        cheetos[0] = new Rectangulo(75, 520, 30, 40,"black", sabritasimg);
+        cheetos[1] = new Rectangulo(70, 905, 30, 40,"black", sabritasimg);
+        cheetos[2] = new Rectangulo(342, 570, 30, 40,"black", sabritasimg);
+        cheetos[3] = new Rectangulo(387, 335, 30, 40,"black", sabritasimg);
+        cheetos[4] = new Rectangulo(630, 365, 30, 40,"black", sabritasimg);
+        cheetos[5] = new Rectangulo(650, 583, 30, 40,"black", sabritasimg);
+        cheetos[6] = new Rectangulo(675, 797, 30, 40,"black", sabritasimg);
+        cheetos[7] = new Rectangulo(902, 280, 30, 40,"black", sabritasimg);
+        cheetos[8] = new Rectangulo(895, 565, 30, 40,"black", sabritasimg);
+        cheetos[9] = new Rectangulo(835, 425, 30, 40,"black", sabritasimg);
+
+        let Pause = false;
+        let Victoria = false;
+
+        // document.addEventListener("keydown", (e) => {
+        //     console.log(e.keyCode);
+
+        //     if (e.keyCode == 80) {
+        //         pause = !Pause
+        //     } else {
+        //         dir = e.keyCode
+
+        //     }
+        // })
+
+        document.addEventListener("keydown", (e) => {
+            console.log(e.keyCode);
+
+            switch (e.keyCode) {
+                case 87:
+                    dir = e.keyCode;
+                    break;
+                case 83:
+                    dir = e.keyCode;
+                    break;
+                case 68:
+                    dir = e.keyCode;
+                    break;
+                case 65:
+                    dir = e.keyCode;
+                    break;
+                case 80:
+                    if (Pause) {
+                        window.requestAnimationFrame(update);
+                    }
+                    Pause = !Pause
+                    break;
+
+            }
+
+        })
+
+        function update() {
+            calcularTiempo();
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+            switch (dir) {
+                case 87:
+                    player.y -= speed;
+                    if (player.y < -50) { player.y = 950 }
+                    break;
+                case 83:
+                    player.y += speed;
+                    if (player.y > 950) { player.y = 0 }
+                    break;
+                case 68:
+                    player.x += speed;
+                    if (player.x > 950) { player.x = 0 }
+                    break;
+                case 65:
+                    player.x -= speed;
+                    if (player.x < -50) { player.x = 950 }
+                    break;
+            }
+
+            if (player.seTocan(meta)) {
+                Victoria = true;
+            }
+
+            for (var i = cheetos.length - 1; i >= 0; i--) {
+                if(player.seTocan(cheetos[i])){
+                    cheetosRecolectar++
+                    cheetos.splice(i,1)
+                    if(cheetosRecolectar == 10){
+                        muros.splice(120,1)
+                    }
+                }
+
+            }
+            
+            for (var i = muros.length - 1; i >= 0; i--) {
+
+                if (player.seTocan(muros[i])) {
+
+                    switch (dir) {
+                        case 87:
+                            player.y += speed;
+                            break;
+                        case 83:
+                            player.y -= speed;
+                            break;
+                        case 68:
+                            player.x -= speed;
+                            break;
+                        case 65:
+                            player.x += speed;
+                            break;
+                    }
+                    dir = 0;
+                }
+
+            }
+
+            repaint();
+
+            if (!Pause && !Victoria) {
+                window.requestAnimationFrame(update);
+
+            } else if (Pause) {
+                ctx.fillStyle = "rgba(0,0,0, 0.25)"
+                ctx.fillRect(0, 0, 1000, 1000);
+                ctx.font = "100px arial"
+                ctx.fillStyle = "rgb(255, 211, 8)";
+                ctx.fillText(`PAUSE`, 300, 500)
+
+            } else if (Victoria) {
+                ctx.fillStyle = "rgba(0,0,0, 0.25)"
+                ctx.fillRect(0, 0, 1000, 1000);
+                ctx.font = "50px arial"
+                ctx.fillStyle = "rgb(255, 211, 8)";
+                ctx.fillText(`FELICIDADES HAS GANADO!`, 150, 500);
+                // audio.pause(); 
+            }
+
+        }
+
+
+        function repaint() {
+            player.paint(ctx)
+            meta.paint(ctx)
+            for (var i = muros.length - 1; i >= 0; i--) {
+                muros[i].paint(ctx)
+            }
+            for (var i = cheetos.length - 1; i >= 0; i--) {
+                cheetos[i].paint(ctx)
+            }
+            ctx.fillStyle = "rgb(0,0,0)"
+            ctx.font ="30px arial"
+            ctx.fillText(`Tiempo transcurrido: ${calcularTiempo()}s`, 50, 50);
+            ctx.fillText(`${cheetosRecolectar}/10`, 890,50);
+            ctx.drawImage(sabritasimg, 840,15,45,60)
+        }
+        window.requestAnimationFrame = (function () {
+            return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                function (callback) {
+                    window.setTimeout(callback, 17);
+                };
+        }());
+
+        window.requestAnimationFrame(update);
+    </script>
+
+</body>
+
+</html>
