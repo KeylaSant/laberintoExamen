@@ -13,7 +13,7 @@
         }
 
         body {
-            background-color: black;
+            background: url(./fondogatos.png);
         }
     </style>
 
@@ -23,7 +23,22 @@
     <img id="bananacat" src="bananacat.png" style="display: none;" />
     <img id="maxwell" src="gatonegro.png" style="display: none;" />
     <img id="sabritas" src="cheetos.png" style="display: none;" />
-    <canvas id="myCanvas" width="1000" height="1000"></canvas>
+    <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; gap: 50px;">
+        <canvas id="myCanvas" width="1000" height="1000"></canvas>
+
+        <div style="width: 25%; font-size: 1.7em; font-family: sans-serif; background-color: #c073cf; padding: 20px; border-radius: 20px;">
+            <h4>INSTRUCCIONES</h4>
+            <p>Ayuda a Gato Banana a llegar con su amigo Maxwell,
+                 pero antes debes recolectar todos los cheetos para poder ganar.</p>
+            <p>P = Pausa</p>
+            <p>W = Arriba</p>
+            <p>S = Abajo</p>
+            <p>A = Izquierda</p>
+            <p>D = Derecha</p>
+            
+        </div>
+    </div>
+    
 
     <script>
         const canvas = document.getElementById("myCanvas");
@@ -39,14 +54,15 @@
         let inicioTiempo;
         let cheetosRecolectar=0;
         let audio = new Audio("happycat.mp3");
-        //let sonido = new Sonido("winner.mp3");
+        let audioGanar = new Audio("winner.mp3");
         audio.preload = "auto";
         audio.autoplay= true;
         audio.loop = true;
         audio.volume = 0.10;
-        // audio.onload=()=> {
-        //     audio.play();
-        // }
+
+        audioGanar.preload = "auto";
+        audioGanar.volume = 0.10;
+        
             function calcularTiempo(){
                 if(!inicioTiempo){
                     inicioTiempo= performance.now();
@@ -353,7 +369,7 @@
                 ctx.font = "50px arial"
                 ctx.fillStyle = "rgb(255, 211, 8)";
                 ctx.fillText(`FELICIDADES HAS GANADO!`, 150, 500);
-                // audio.pause(); 
+                audioGanar.play(); 
             }
 
         }
